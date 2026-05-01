@@ -24,7 +24,7 @@ def _expense_dict(e):
     return {
         'id': e.id, 'user_id': e.user_id, 'description': e.description,
         'amount': float(e.amount), 'category': e.category,
-        'date': e.date.isoformat() if e.date else None,
+        'date': e.date.isoformat() if hasattr(e.date, 'isoformat') else str(e.date) if e.date else None,
         'product_name': e.product_name, 'quantity': float(e.quantity),
         'size': e.size, 'mrp': float(e.mrp) if e.mrp else float(e.amount),
     }
