@@ -7,15 +7,20 @@ CATEGORIES = ['Dairy', 'Vegetables', 'Household', 'Personal Care', 'Frozen Food'
 
 EXTRACT_PROMPT = f"""Extract all purchased items from this receipt/invoice/bill. For each item return:
 - description: item name (short, clean)
-- amount: final price paid (number)
+- amount: final price paid for that item (number, use the Amount column not Price column)
 - category: one of {', '.join(CATEGORIES)}
-- quantity: number (default 1)
+- quantity: number from Qty column (default 1)
 - size: weight/volume if visible (e.g. "500ml", "1kg")
 - mrp: original MRP if visible, else same as amount
 
+Rules:
+- Only extract individual line items, NOT subtotals, service charges, taxes (CGST/SGST/GST), tips, delivery fees, round-off, or grand totals
+- Skip zero-value/complimentary items
+- For restaurant bills, each dish/drink is a separate item with category "Other"
+- If an item name spans multiple lines, combine them into one description
+
 Return ONLY a JSON array. Example:
-[{{"description":"Paneer","amount":95,"category":"Dairy","quantity":1,"size":"200g","mrp":105}}]
-Skip delivery/handling charges, taxes, totals."""
+[{{"description":"Tandoori Paneer Tacos","amount":490,"category":"Other","quantity":1,"size":"","mrp":490}}]"""
 
 
 def groq_chat(messages, max_tokens=1000):
